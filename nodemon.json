@@ -1,3 +1,5 @@
 {
-  "env": {}
+  "env": {
+    "MONGO_DB": "events-react-dev"
+  }
 }

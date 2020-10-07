@@ -4,6 +4,8 @@ const { graphqlHTTP } = require("express-graphql");
 const { buildSchema } = require("graphql");
 const mongoose = require("mongoose");
 
+const Event = require("./models/event");
+
 const app = express();
 
 const events = [];
@@ -48,15 +50,23 @@ app.use(
         return events;
       },
       createEvent: (args) => {
-        const event = {
-          _id: Math.random().toString(),
+        const event = new Event({
           title: args.eventInput.title,
           description: args.eventInput.description,
           price: +args.eventInput.price,
-          date: args.eventInput.date,
-        };
-        console.log(args);
-        events.push(event);
+          date: new Date(args.eventInput.date),
+        });
+        return event
+          .save()
+          .then((result) => {
+            console.log(result);
+            return { ...result._doc };
+          })
+          .catch((err) => {
+            console.log(err);
+            throw err;
+          });
+
         return event;
       },
     },
@@ -64,7 +74,7 @@ app.use(
   })
 );
 
-const url = "mongodb://127.0.0.1:27017";
+const url = `mongodb://127.0.0.1:27017/${process.env.MONGO_DB}`;
 
 mongoose
   .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
