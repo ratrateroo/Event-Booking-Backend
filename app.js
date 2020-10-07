@@ -64,4 +64,14 @@ app.use(
   })
 );
 
-app.listen(3000);
+const url = "mongodb://127.0.0.1:27017";
+
+mongoose
+  .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log("Connected to the Database.");
+    app.listen(3000);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
