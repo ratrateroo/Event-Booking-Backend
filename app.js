@@ -29,7 +29,7 @@ app.use(
         type User {
           _id: ID!
           email: String!
-          password: String!
+          password: String
         }
 
         input EventInput {
@@ -39,10 +39,10 @@ app.use(
           date: String!
         }
 
-        input UserInput }
+        input UserInput {
         email: String!
         password: String!
-
+        }
 
         type RootQuery {
             events: [Event!]!
