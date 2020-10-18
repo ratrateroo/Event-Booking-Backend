@@ -80,7 +80,7 @@ module.exports = {
             return user.save();
           })
           .then((result) => {
-            return { ...result._doc, _id: result.id };
+            return { ...result._doc, password: null, _id: result.id };
           })
           .catch((err) => {
             throw err;
