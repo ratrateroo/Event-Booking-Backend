@@ -55,12 +55,30 @@ module.exports = {
           description: args.eventInput.description,
           price: +args.eventInput.price,
           date: new Date(args.eventInput.date),
+          creator: '5f8c29ebabb1422024cc8db1'
+
         });
+        let createdEvent;
         return event
           .save()
           .then((result) => {
-            console.log(result);
-            return { ...result._doc };
+            createdEvent = {
+              ...result._doc,
+              _id: result._doc._id.toString(),
+              creator: user.bind(this, result._doc.creator)
+            };
+            return User.findById('5f8c29ebabb1422024cc8db1');
+            
+          })
+          .then(user => {
+            if (!user) {
+              throw new Error('User not found.');
+            }
+            user.createdEvents.push(event);
+            return user.save();
+          })
+          .then(result => {
+            return createdEvent;
           })
           .catch((err) => {
             console.log(err);
