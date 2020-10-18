@@ -12,7 +12,7 @@ const events = eventIds => {
         _id: event.id,
         creator: user.bind(this, event.creator)
       };
-    })
+    });
   })
   .catch(err => {
     throw err;
@@ -39,6 +39,7 @@ module.exports = {
           .then((events) => {
             return events.map((event) => {
               return { 
+                
                 ...event._doc,
                 _id: event._doc._id.toString(),
                 creator: user.bind(this, event._doc.creator) };
