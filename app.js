@@ -1,22 +1,23 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const { graphqlHTTP } = require("express-graphql");
-const { buildSchema } = require("graphql");
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
-const Event = require("./models/event");
-const User = require("./models/user");
+const graphQlSchema = require('./graphql/schema/index');
+const graphQlResolvers = require('./graphql/resolvers/index');
+
 
 const app = express();
 
-const events = [];
 
 app.use(bodyParser.json());
+
+
 
 app.use(
   "/graphql",
   graphqlHTTP({
+<<<<<<< HEAD
     schema: buildSchema(`
         type Event {
           _id: ID!
@@ -127,6 +128,10 @@ app.use(
           });
       },
     },
+=======
+    schema: graphQlSchema,
+    rootValue: graphQlResolvers,
+>>>>>>> 921ee2292a52216552a69b5fb1c7da4750e9da23
     graphiql: true,
   })
 );
