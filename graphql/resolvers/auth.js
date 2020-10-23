@@ -58,7 +58,8 @@ module.exports = {
       },
 
       login: async({email, password}) => {
-        const user = User.findOne({ email: email });
+
+        const user = await User.findOne({ email: email });
         if (!user) {
           throw new Error('User does not exist!');
         }
@@ -75,6 +76,6 @@ module.exports = {
           expiresIn: '1h'
         });
 
-        return { userId: (await user).id, token: token, tokenExpiration: 1 };
+        return { userId: user.id, token: token, tokenExpiration: 1 };
       }
     };

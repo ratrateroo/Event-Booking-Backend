@@ -14,7 +14,10 @@ module.exports = {
 
       
 
-      bookings: async () => {
+      bookings: async (args, req) => {
+        if (!req.isAuth) {
+          throw new Error('Unauthorized!');
+        }
         try {
           const bookings = await Booking.find();
           return bookings.map(booking => {
@@ -26,10 +29,13 @@ module.exports = {
         }
       },      
 
-      bookEvent: async args => {
+      bookEvent: async (args, req) => {
+        if (!req.isAuth) {
+          throw new Error('Unauthorized!');
+        }
         const fetchedEvent = await Event.findOne({_id: args.eventId});
         const booking = new Booking({
-          user: '5f8c29ebabb1422024cc8db1',
+          user: req.userId,
           event: fetchedEvent
         });
         const result = await booking.save();
@@ -37,7 +43,11 @@ module.exports = {
         
       },
 
-      cancelBooking: async args => {
+      cancelBooking: async (args, req) => {
+
+        if (!req.isAuth) {
+          throw new Error('Unauthorized!');
+        }
         try {
           const booking = await Booking.findById(args.bookingId).populate('event');
           const event =    transformEvent(booking.event);
