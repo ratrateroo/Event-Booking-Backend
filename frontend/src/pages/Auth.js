@@ -30,16 +30,30 @@ class AuthPage extends Component {
 
     console.log(email, password);
 
-    const requestBody = {
+    let requestBody = {
       query: `
-            mutation {
-                createUser(userInput: {email: "${email}", password:"${password}"}) {
-                    _id
-                    email
+            query {
+                login(email: "${email}", password:"${password}") {
+                    userId
+                    token
+                    tokenExpiration
                 }
             }
         `,
     };
+
+    if (!this.state.isLogin) {
+      requestBody = {
+        query: `
+                  mutation {
+                      createUser(userInput: {email: "${email}", password:"${password}"}) {
+                          _id
+                          email
+                      }
+                  }
+              `,
+      };
+    }
 
     fetch('http://localhost:8000/graphql', {
       method: 'POST',
