@@ -36,7 +36,7 @@
 .main-navigation__items a,
 .main-navigation__items button {
   text-decoration: none;
-  color: #000;
+  color: #fff;
   padding: 0.25rem 0.5rem;
   border: none;
   font: inherit;
@@ -51,5 +51,7 @@
 .main-navigation__items a.active,
 .main-navigation__items button:hover,
 .main-navigation__items button:active {
-  color: #fdefa0;
+  color: #000;
+  background: #fdefa0;
+  border-radius: 0.3rem;
 }

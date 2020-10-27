@@ -4,12 +4,6 @@ body {
   font-family: sans-serif;
 }
 
-.auth-form {
-  width: 25rem;
-  max-width: 80%;
-  margin: 5rem auto;
-}
-
 .form-control label,
 .form-control input {
   width: 100%;
