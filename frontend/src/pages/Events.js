@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 
 import Backdrop from '../components/Backdrop/Backdrop';
 import Modal from '../components/Modal/Modal';
+import AuthContext from '../context/auth-context';
 import './Events.css';
 
 class EventsPage extends Component {
   state = {
     creating: false,
   };
+
+  static contextType = AuthContext;
 
   constructor(props) {
     super(props);
@@ -24,13 +27,13 @@ class EventsPage extends Component {
   modalConfirmHandler = () => {
     this.setState({ creating: false });
     const title = this.titleElRef.current.value;
-    const price = this.priceElRef.current.value;
+    const price = +this.priceElRef.current.value;
     const date = this.dateElRef.current.value;
     const description = this.descriptionElRef.current.value;
 
     if (
       title.trim().length === 0 ||
-      price.trim().length === 0 ||
+      price <= 0 ||
       date.trim().length === 0 ||
       description.trim().length === 0
     ) {
@@ -38,6 +41,52 @@ class EventsPage extends Component {
     }
     const event = { title, price, date, description };
     console.log(event);
+
+    const requestBody = {
+      query: `
+          mutation {
+              createEvent(eventInput: {title: "${title}", description: "${description}", price: ${price} , date:"${date}"}) {
+                  _id
+                  title
+                  description
+                  date
+                  price
+                  creator {
+                    _id
+                    email
+                  }
+                }
+          }
+      `,
+    };
+
+
+    
+
+    const token = this.context.token;
+
+    console.log(this.context);
+
+    fetch('http://localhost:8000/graphql', {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+    })
+      .then((res) => {
+        if (res.status !== 200 && res.status !== 201) {
+          throw new Error('Failed!');
+        }
+        return res.json();
+      })
+      .then((resData) => {
+        console.log(resData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   modalCancelHandler = () => {
@@ -69,7 +118,7 @@ class EventsPage extends Component {
 
               <div className="form-control">
                 <label htmlFor="title">Date</label>
-                <input type="date" id="date" ref={this.dateElRef} />
+                <input type="datetime-local" id="date" ref={this.dateElRef} />
               </div>
               <div className="form-control">
                 <label htmlFor="description">Description</label>
