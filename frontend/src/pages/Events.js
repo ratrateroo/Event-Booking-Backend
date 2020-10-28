@@ -8,6 +8,7 @@ import './Events.css';
 class EventsPage extends Component {
   state = {
     creating: false,
+    events: [],
   };
 
   static contextType = AuthContext;
@@ -83,7 +84,7 @@ class EventsPage extends Component {
         return res.json();
       })
       .then((resData) => {
-        console.log(resData);
+        this.fetchEvents();
       })
       .catch((err) => {
         console.log(err);
@@ -129,7 +130,8 @@ class EventsPage extends Component {
         return res.json();
       })
       .then((resData) => {
-        console.log(resData);
+        const events = resData.data.events;
+        this.setState({ events: events });
       })
       .catch((err) => {
         console.log(err);
@@ -137,6 +139,14 @@ class EventsPage extends Component {
   }
 
   render() {
+    const eventList = this.state.events.map((event) => {
+      return (
+        <li key={event._id} className="events__list-item">
+          {event.title}
+        </li>
+      );
+    });
+
     return (
       <React.Fragment>
         {this.state.creating && <Backdrop />}
@@ -183,9 +193,7 @@ class EventsPage extends Component {
           </div>
         )}
 
-        <ul className="events__list">
-          <li className="events__list-item"></li>
-        </ul>
+        <ul className="events__list">{eventList}</ul>
       </React.Fragment>
     );
   }
