@@ -20,6 +20,10 @@ class EventsPage extends Component {
     this.descriptionElRef = React.createRef();
   }
 
+  componentDidMount() {
+    this.fetchEvents();
+  }
+
   startCreateEventHandler = () => {
     this.setState({ creating: true });
   };
@@ -60,9 +64,6 @@ class EventsPage extends Component {
       `,
     };
 
-
-    
-
     const token = this.context.token;
 
     console.log(this.context);
@@ -72,7 +73,7 @@ class EventsPage extends Component {
       body: JSON.stringify(requestBody),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
+        Authorization: 'Bearer ' + token,
       },
     })
       .then((res) => {
@@ -92,6 +93,48 @@ class EventsPage extends Component {
   modalCancelHandler = () => {
     this.setState({ creating: false });
   };
+
+  fetchEvents() {
+    const requestBody = {
+      query: `
+          query {
+              events {
+                  _id
+                  title
+                  description
+                  date
+                  price
+                  creator {
+                    _id
+                    email
+                  }
+                }
+          }
+      `,
+    };
+
+    console.log(this.context);
+
+    fetch('http://localhost:8000/graphql', {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        if (res.status !== 200 && res.status !== 201) {
+          throw new Error('Failed!');
+        }
+        return res.json();
+      })
+      .then((resData) => {
+        console.log(resData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   render() {
     return (
@@ -131,12 +174,18 @@ class EventsPage extends Component {
             </form>
           </Modal>
         )}
-        <div className="events-control">
-          <p>Share your own events!</p>
-          <button className="btn" onClick={this.startCreateEventHandler}>
-            Create Event
-          </button>
-        </div>
+        {this.context.token && (
+          <div className="events-control">
+            <p>Share your own events!</p>
+            <button className="btn" onClick={this.startCreateEventHandler}>
+              Create Event
+            </button>
+          </div>
+        )}
+
+        <ul className="events__list">
+          <li className="events__list-item"></li>
+        </ul>
       </React.Fragment>
     );
   }
