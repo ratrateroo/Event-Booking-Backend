@@ -144,11 +144,11 @@ class EventsPage extends Component {
       })
       .then((resData) => {
         const events = resData.data.events;
-        this.setState({ events: events, isLoading: true });
+        this.setState({ events: events, isLoading: false });
       })
       .catch((err) => {
         console.log(err);
-        this.setState({ isLoading: true });
+        this.setState({ isLoading: false });
       });
   }
 

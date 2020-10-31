@@ -4,9 +4,11 @@ import './Spinner.css';
 
 const spinner = () => {
   return (
-    <div className="lds-ripple">
-      <div></div>
-      <div></div>
+    <div className="spinner-container">
+      <div className="lds-ripple">
+        <div></div>
+        <div></div>
+      </div>
     </div>
   );
 };
