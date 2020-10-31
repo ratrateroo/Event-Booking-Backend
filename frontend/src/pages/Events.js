@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import Backdrop from '../components/Backdrop/Backdrop';
 import Modal from '../components/Modal/Modal';
+import Spinner from '../components/Spinner/Spinner';
 import AuthContext from '../context/auth-context';
 import EventList from './../components/Events/EventList/EventList';
 import './Events.css';
@@ -143,11 +144,11 @@ class EventsPage extends Component {
       })
       .then((resData) => {
         const events = resData.data.events;
-        this.setState({ events: events, isLoading: false });
+        this.setState({ events: events, isLoading: true });
       })
       .catch((err) => {
         console.log(err);
-        this.setState({ isLoading: false });
+        this.setState({ isLoading: true });
       });
   }
 
@@ -198,7 +199,7 @@ class EventsPage extends Component {
           </div>
         )}
         {this.state.isLoading ? (
-          <p>Loading...</p>
+          <Spinner />
         ) : (
           <EventList
             events={this.state.events}
