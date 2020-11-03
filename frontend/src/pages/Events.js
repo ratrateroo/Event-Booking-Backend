@@ -15,6 +15,8 @@ class EventsPage extends Component {
     selectedEvent: false,
   };
 
+  isActive = true;
+
   static contextType = AuthContext;
 
   constructor(props) {
@@ -145,11 +147,15 @@ class EventsPage extends Component {
       })
       .then((resData) => {
         const events = resData.data.events;
-        this.setState({ events: events, isLoading: false });
+        if (this.isActive) {
+          this.setState({ events: events, isLoading: false });
+        }
       })
       .catch((err) => {
         console.log(err);
-        this.setState({ isLoading: false });
+        if (this.isActive) {
+          this.setState({ isLoading: false });
+        }
       });
   }
 
@@ -163,6 +169,11 @@ class EventsPage extends Component {
   };
 
   bookEventHandler = () => {
+    if (!this.context.token) {
+      this.setState({ selectedEvent: null });
+      return;
+    }
+
     const requestBody = {
       query: `
           mutation {
@@ -174,8 +185,6 @@ class EventsPage extends Component {
           }
       `,
     };
-
-    console.log(this.context);
 
     fetch('http://localhost:8000/graphql', {
       method: 'POST',
@@ -193,11 +202,16 @@ class EventsPage extends Component {
       })
       .then((resData) => {
         console.log(resData);
+        this.setState({ selectedEvent: null });
       })
       .catch((err) => {
         console.log(err);
       });
   };
+
+  componentWillUnmount() {
+    this.isActive = false;
+  }
 
   render() {
     return (
@@ -246,7 +260,7 @@ class EventsPage extends Component {
             canConfirm
             onCancel={this.modalCancelHandler}
             onConfirm={this.bookEventHandler}
-            confirmText="Book"
+            confirmText={this.context.token ? 'Book' : 'Confirm'}
           >
             <div>
               <h1>{this.state.selectedEvent.title}</h1>
